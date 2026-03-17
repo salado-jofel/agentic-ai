@@ -1,65 +1,86 @@
-import Image from "next/image";
 
-export default function Home() {
+import { createServerClient } from "@/lib/supabase-server";
+import Header from "./(components)/Header";
+import ComplianceSummary from "./(components)/ComplianceSummary";
+import RecentReports from "./(components)/RecentReports";
+import StatCard from "./(components)/StatCard";
+
+export const dynamic = "force-dynamic";
+
+export default async function Dashboard() {
+  const supabase = createServerClient();
+
+  // Fetch reports
+  const { data: reports = [] } = await supabase
+    .from("reports")
+    .select("*, compliance_alerts(count)")
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  // Fetch alert counts
+  const { data: alerts = [] } = await supabase
+    .from("compliance_alerts")
+    .select("severity, resolved")
+    .eq("resolved", false);
+
+  const total = reports?.length ?? 0;
+  const pending = reports?.filter((r) => r.status === "pending").length ?? 0;
+  const approved = reports?.filter((r) => r.status === "approved").length ?? 0;
+  const activeAlerts = alerts?.length ?? 0;
+
+  const formattedReports =
+    reports?.map((r) => ({
+      id: r.id,
+      title: r.title,
+      status: r.status,
+      created_at: r.created_at,
+      alerts: r.compliance_alerts?.[0]?.count ?? 0,
+    })) ?? [];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div>
+      <Header title="Dashboard" />
+      <div className="p-6 space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            label="Total Reports"
+            value={total}
+            icon="📋"
+            color="bg-blue-50 text-blue-600"
+            sub="All time"
+          />
+          <StatCard
+            label="Pending Review"
+            value={pending}
+            icon="⏳"
+            color="bg-yellow-50 text-yellow-600"
+            sub="Needs action"
+          />
+          <StatCard
+            label="Approved"
+            value={approved}
+            icon="✅"
+            color="bg-green-50 text-green-600"
+            sub={`${total > 0 ? Math.round((approved / total) * 100) : 0}% rate`}
+          />
+          <StatCard
+            label="Active Alerts"
+            value={activeAlerts}
+            icon="⚠️"
+            color="bg-red-50 text-red-600"
+            sub="Unresolved"
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2">
+            <RecentReports reports={formattedReports} />
+          </div>
+          <div>
+            <ComplianceSummary />
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
