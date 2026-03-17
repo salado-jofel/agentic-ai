@@ -7,7 +7,7 @@ const navItems = [
   { label: "Dashboard", href: "/", icon: "📊" },
   { label: "New Report", href: "/reports/new", icon: "📝" },
   { label: "AI Analysis", href: "/analysis", icon: "🤖" },
-  { label: "Historical Patterns", href: "/patterns", icon: "📈" },
+  // { label: "Historical Patterns", href: "/patterns", icon: "📈" },
 ];
 
 export default function Sidebar() {
