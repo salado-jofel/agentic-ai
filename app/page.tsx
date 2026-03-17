@@ -15,14 +15,12 @@ export const dynamic = "force-dynamic";
 export default async function Dashboard() {
   const supabase = createServerClient();
 
-  // Fetch reports
   const { data: reports = [] } = await supabase
     .from("reports")
     .select("*, compliance_alerts(count)")
     .order("created_at", { ascending: false })
     .limit(10);
 
-  // Fetch alert counts
   const { data: alerts = [] } = await supabase
     .from("compliance_alerts")
     .select("severity, resolved")
@@ -45,38 +43,40 @@ export default async function Dashboard() {
   return (
     <div>
       <Header title="Dashboard" />
-      <div className="p-6 space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+        {/* Stat cards — 2 col on mobile, 4 on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <StatCard
             label="Total Reports"
             value={total}
-            icon={<FiFileText className="h-6 w-6" />}
+            icon={<FiFileText className="h-5 w-5 sm:h-6 sm:w-6" />}
             color="bg-blue-50 text-blue-600"
             sub="All time"
           />
           <StatCard
             label="Pending Review"
             value={pending}
-            icon={<FiClock className="h-6 w-6" />}
+            icon={<FiClock className="h-5 w-5 sm:h-6 sm:w-6" />}
             color="bg-yellow-50 text-yellow-600"
             sub="Needs action"
           />
           <StatCard
             label="Approved"
             value={approved}
-            icon={<FiCheckCircle className="h-6 w-6" />}
+            icon={<FiCheckCircle className="h-5 w-5 sm:h-6 sm:w-6" />}
             color="bg-green-50 text-green-600"
             sub={`${total > 0 ? Math.round((approved / total) * 100) : 0}% rate`}
           />
           <StatCard
             label="Active Alerts"
             value={activeAlerts}
-            icon={<FiAlertTriangle className="h-6 w-6" />}
+            icon={<FiAlertTriangle className="h-5 w-5 sm:h-6 sm:w-6" />}
             color="bg-red-50 text-red-600"
             sub="Unresolved"
           />
         </div>
 
+        {/* Reports + compliance — stacked on mobile, side by side on desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2">
             <RecentReports reports={formattedReports} />

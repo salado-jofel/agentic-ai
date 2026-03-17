@@ -104,10 +104,6 @@ export default function AnalysisPage() {
                 Paste report data below for AI-powered QA analysis
               </p>
             </div>
-            <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
-              <FiCpu className="h-3.5 w-3.5" />
-              Gemini 3.1 Flash-Lite
-            </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
