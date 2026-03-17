@@ -274,7 +274,7 @@ export default async function ReportDetailPage({
                   <FiCpu className="h-4 w-4" />
                   Analyze with AI
                 </Link>
-                <Link
+                {/* <Link
                   href="/patterns"
                   className="flex items-center gap-2 w-full text-sm
                     bg-blue-50 hover:bg-blue-100 text-blue-700
@@ -282,7 +282,7 @@ export default async function ReportDetailPage({
                 >
                   <FiTrendingUp className="h-4 w-4" />
                   View Patterns
-                </Link>
+                </Link> */}
                 <Link
                   href="/reports/new"
                   className="flex items-center gap-2 w-full text-sm
