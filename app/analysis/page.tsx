@@ -20,7 +20,7 @@ import { FaLightbulb } from "react-icons/fa";
 type AnalysisResult = {
   consistency: {
     score: number;
-    issues: string[];
+    issues: string[]; // ← was "conflicts"
   };
   structured_data: {
     patient_condition: string;
@@ -94,10 +94,7 @@ export default function AnalysisPage() {
       <Header title="AI Analysis" />
       <div className="p-6 space-y-6">
         {/* Input Panel */}
-        <div
-          className="bg-white rounded-xl shadow-sm border border-gray-100
-          p-6 space-y-4"
-        >
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-gray-800">
@@ -107,12 +104,9 @@ export default function AnalysisPage() {
                 Paste report data below for AI-powered QA analysis
               </p>
             </div>
-            <span
-              className="text-xs bg-purple-100 text-purple-700 px-3 py-1
-              rounded-full font-medium flex items-center gap-1.5"
-            >
+            <span className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium flex items-center gap-1.5">
               <FiCpu className="h-3.5 w-3.5" />
-              Gemini 2.5 Flash
+              Gemini 3.1 Flash-Lite
             </span>
           </div>
 
@@ -125,8 +119,7 @@ export default function AnalysisPage() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Post-Op Cardiac Assessment"
-                className="w-full border border-gray-200 rounded-lg px-4 py-2.5
-                  text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <div>
@@ -137,8 +130,7 @@ export default function AnalysisPage() {
                 value={codes}
                 onChange={(e) => setCodes(e.target.value)}
                 placeholder="e.g. ICD-10: I21.0, CPT: 92941"
-                className="w-full border border-gray-200 rounded-lg px-4 py-2.5
-                  text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
           </div>
@@ -152,17 +144,12 @@ export default function AnalysisPage() {
               onChange={(e) => setNotes(e.target.value)}
               rows={5}
               placeholder="Paste unstructured clinician notes here for AI extraction and analysis..."
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5
-                text-sm focus:outline-none focus:ring-2 focus:ring-purple-500
-                resize-none"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
             />
           </div>
 
           {error && (
-            <div
-              className="flex items-center gap-2 text-sm text-red-500
-              bg-red-50 px-4 py-2 rounded-lg"
-            >
+            <div className="flex items-center gap-2 text-sm text-red-500 bg-red-50 px-4 py-2 rounded-lg">
               <FiAlertCircle className="h-4 w-4 flex-shrink-0" />
               {error}
             </div>
@@ -172,9 +159,7 @@ export default function AnalysisPage() {
             <button
               onClick={handleAnalyze}
               disabled={loading}
-              className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50
-                disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-lg
-                text-sm font-medium transition-colors flex items-center gap-2"
+              className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
             >
               {loading ? (
                 <>
@@ -190,9 +175,7 @@ export default function AnalysisPage() {
             </button>
             <button
               onClick={handleClear}
-              className="border border-gray-200 text-gray-600 hover:bg-gray-50
-                px-6 py-2.5 rounded-lg text-sm font-medium transition-colors
-                flex items-center gap-2"
+              className="border border-gray-200 text-gray-600 hover:bg-gray-50 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
             >
               <FiX className="h-4 w-4" />
               Clear
@@ -228,8 +211,7 @@ export default function AnalysisPage() {
                 />
                 <div className="flex flex-col items-center gap-2">
                   <span
-                    className={`px-4 py-2 rounded-full text-sm font-semibold
-                    capitalize ${urgencyColors[result.structured_data.urgency_level]}`}
+                    className={`px-4 py-2 rounded-full text-sm font-semibold capitalize ${urgencyColors[result.structured_data.urgency_level]}`}
                   >
                     {result.structured_data.urgency_level}
                   </span>
@@ -240,10 +222,7 @@ export default function AnalysisPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Structured Data Extraction */}
-              <div
-                className="bg-white rounded-xl shadow-sm border border-gray-100
-                p-6 space-y-4"
-              >
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
                 <div className="flex items-center gap-2">
                   <FiClipboard className="h-4 w-4 text-gray-500" />
                   <h3 className="font-semibold text-gray-800">
@@ -265,12 +244,11 @@ export default function AnalysisPage() {
                     Procedures
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {result.structured_data.procedures.length > 0 ? (
-                      result.structured_data.procedures.map((p, i) => (
+                    {(result.structured_data.procedures ?? []).length > 0 ? (
+                      (result.structured_data.procedures ?? []).map((p, i) => (
                         <span
                           key={i}
-                          className="text-xs bg-blue-50 text-blue-700
-                          px-3 py-1 rounded-full"
+                          className="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-full"
                         >
                           {p}
                         </span>
@@ -288,12 +266,11 @@ export default function AnalysisPage() {
                     Diagnoses
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {result.structured_data.diagnoses.length > 0 ? (
-                      result.structured_data.diagnoses.map((d, i) => (
+                    {(result.structured_data.diagnoses ?? []).length > 0 ? (
+                      (result.structured_data.diagnoses ?? []).map((d, i) => (
                         <span
                           key={i}
-                          className="text-xs bg-purple-50 text-purple-700
-                          px-3 py-1 rounded-full"
+                          className="text-xs bg-purple-50 text-purple-700 px-3 py-1 rounded-full"
                         >
                           {d}
                         </span>
@@ -311,16 +288,18 @@ export default function AnalysisPage() {
                     Recommended Codes
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {result.structured_data.recommended_codes.length > 0 ? (
-                      result.structured_data.recommended_codes.map((c, i) => (
-                        <span
-                          key={i}
-                          className="text-xs bg-green-50 text-green-700
-                          px-3 py-1 rounded-full font-mono"
-                        >
-                          {c}
-                        </span>
-                      ))
+                    {(result.structured_data.recommended_codes ?? []).length >
+                    0 ? (
+                      (result.structured_data.recommended_codes ?? []).map(
+                        (c, i) => (
+                          <span
+                            key={i}
+                            className="text-xs bg-green-50 text-green-700 px-3 py-1 rounded-full font-mono"
+                          >
+                            {c}
+                          </span>
+                        ),
+                      )
                     ) : (
                       <span className="text-xs text-gray-400">
                         None suggested
@@ -339,14 +318,14 @@ export default function AnalysisPage() {
                       Consistency Issues
                     </h3>
                   </div>
-                  {result.consistency.issues.length === 0 ? (
+                  {(result.consistency.issues ?? []).length === 0 ? (
                     <div className="flex items-center gap-2 text-sm text-green-600">
                       <FiCheckCircle className="h-4 w-4" />
                       No consistency issues found
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      {result.consistency.issues.map((issue, i) => (
+                      {(result.consistency.issues ?? []).map((issue, i) => (
                         <AlertBadge
                           key={i}
                           severity="high"
@@ -366,16 +345,13 @@ export default function AnalysisPage() {
                     </h3>
                   </div>
 
-                  {result.integrity.missing_fields.length > 0 && (
+                  {(result.integrity.missing_fields ?? []).length > 0 && (
                     <div className="mb-3">
-                      <p
-                        className="text-xs font-semibold text-gray-500
-                        uppercase mb-2"
-                      >
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
                         Missing Fields
                       </p>
                       <div className="space-y-1">
-                        {result.integrity.missing_fields.map((f, i) => (
+                        {(result.integrity.missing_fields ?? []).map((f, i) => (
                           <AlertBadge
                             key={i}
                             severity="high"
@@ -387,21 +363,16 @@ export default function AnalysisPage() {
                     </div>
                   )}
 
-                  {result.integrity.vague_terms.length > 0 && (
+                  {(result.integrity.vague_terms ?? []).length > 0 && (
                     <div>
-                      <p
-                        className="text-xs font-semibold text-gray-500
-                        uppercase mb-2"
-                      >
+                      <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
                         Vague Terms
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {result.integrity.vague_terms.map((t, i) => (
+                        {(result.integrity.vague_terms ?? []).map((t, i) => (
                           <span
                             key={i}
-                            className="flex items-center gap-1
-                            text-xs bg-yellow-50 text-yellow-700 px-3 py-1
-                            rounded-full"
+                            className="flex items-center gap-1 text-xs bg-yellow-50 text-yellow-700 px-3 py-1 rounded-full"
                           >
                             <FiAlertTriangle className="h-3 w-3" />
                             {t}
@@ -411,8 +382,8 @@ export default function AnalysisPage() {
                     </div>
                   )}
 
-                  {result.integrity.missing_fields.length === 0 &&
-                    result.integrity.vague_terms.length === 0 && (
+                  {(result.integrity.missing_fields ?? []).length === 0 &&
+                    (result.integrity.vague_terms ?? []).length === 0 && (
                       <div className="flex items-center gap-2 text-sm text-green-600">
                         <FiCheckCircle className="h-4 w-4" />
                         Integrity check passed
@@ -429,11 +400,10 @@ export default function AnalysisPage() {
                 <h3 className="font-semibold text-gray-800">AI Suggestions</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {result.suggestions.map((s, i) => (
+                {(result.suggestions ?? []).map((s, i) => (
                   <div
                     key={i}
-                    className="flex items-start gap-3 bg-purple-50
-                    rounded-lg p-4"
+                    className="flex items-start gap-3 bg-purple-50 rounded-lg p-4"
                   >
                     <span className="text-purple-400 font-bold text-sm mt-0.5">
                       {i + 1}.
