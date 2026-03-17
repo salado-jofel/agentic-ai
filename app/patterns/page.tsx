@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import {
+  FiTrendingUp,
+  FiCheckCircle,
+  FiLoader,
+  FiAlertCircle,
+} from "react-icons/fi";
 import Header from "../(components)/Header";
 import InsightsPanel from "../(components)/InsightsPanel";
 import PatternCard from "../(components)/PatternCard";
@@ -56,6 +62,11 @@ export default function PatternsPage() {
   const [error, setError] = useState("");
   const [appliedPattern, setAppliedPattern] = useState<string | null>(null);
 
+  // Auto-load on first visit
+  useEffect(() => {
+    handleLoad();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleLoad = async () => {
     setError("");
     setLoading(true);
@@ -74,7 +85,7 @@ export default function PatternsPage() {
       setResult(data);
     } catch {
       setError(
-        "Failed to load patterns. Check your OpenAI API key and try again.",
+        "Failed to load patterns. Check your Gemini API key and try again.",
       );
     } finally {
       setLoading(false);
@@ -83,8 +94,6 @@ export default function PatternsPage() {
 
   const handleApply = (pattern: Pattern) => {
     setAppliedPattern(pattern.pattern_type);
-    // In a real app this would pre-fill the report editor
-    // For now we show a toast then redirect
     setTimeout(() => {
       router.push("/reports/new");
     }, 1200);
@@ -142,65 +151,40 @@ export default function PatternsPage() {
               >
                 {loading ? (
                   <>
-                    <svg
-                      className="animate-spin h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8z"
-                      />
-                    </svg>
+                    <FiLoader className="animate-spin h-4 w-4" />
                     Loading...
                   </>
                 ) : (
-                  "📈 Load Patterns"
+                  <>
+                    <FiTrendingUp className="h-4 w-4" />
+                    Load Patterns
+                  </>
                 )}
               </button>
             </div>
           </div>
 
           {error && (
-            <p className="text-sm text-red-500 bg-red-50 px-4 py-2 rounded-lg mt-4">
+            <div
+              className="flex items-center gap-2 text-sm text-red-500
+              bg-red-50 px-4 py-2 rounded-lg mt-4"
+            >
+              <FiAlertCircle className="h-4 w-4 flex-shrink-0" />
               {error}
-            </p>
+            </div>
           )}
         </div>
 
         {/* Applied Pattern Toast */}
         {appliedPattern && (
           <div
-            className="bg-green-50 border border-green-200 rounded-xl px-5 py-3
-            flex items-center gap-3"
+            className="bg-green-50 border border-green-200 rounded-xl
+            px-5 py-3 flex items-center gap-3"
           >
-            <span className="text-green-500 text-lg">✅</span>
+            <FiCheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
             <p className="text-sm text-green-700 font-medium">
               Pattern <span className="font-bold">"{appliedPattern}"</span>{" "}
               applied — redirecting to report editor...
-            </p>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!result && !loading && (
-          <div
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-16
-            text-center"
-          >
-            <p className="text-4xl mb-4">📈</p>
-            <p className="text-gray-600 font-medium">No patterns loaded yet</p>
-            <p className="text-sm text-gray-400 mt-1">
-              Select filters above and click Load Patterns to begin
             </p>
           </div>
         )}
@@ -212,8 +196,8 @@ export default function PatternsPage() {
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-xl border border-gray-100 p-5 space-y-3
-                    animate-pulse"
+                  className="bg-white rounded-xl border border-gray-100
+                    p-5 space-y-3 animate-pulse"
                 >
                   <div className="h-3 bg-gray-200 rounded w-1/3" />
                   <div className="h-4 bg-gray-200 rounded w-2/3" />
@@ -227,8 +211,8 @@ export default function PatternsPage() {
             </div>
             <div className="space-y-4">
               <div
-                className="bg-white rounded-xl border border-gray-100 p-5
-                animate-pulse space-y-3"
+                className="bg-white rounded-xl border border-gray-100
+                p-5 animate-pulse space-y-3"
               >
                 <div className="h-4 bg-gray-200 rounded w-1/2" />
                 <div className="h-8 bg-gray-100 rounded" />
@@ -240,9 +224,8 @@ export default function PatternsPage() {
         )}
 
         {/* Results */}
-        {result && (
+        {!loading && result && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Pattern Cards */}
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               {result.patterns.map((pattern) => (
                 <PatternCard
@@ -252,11 +235,23 @@ export default function PatternsPage() {
                 />
               ))}
             </div>
-
-            {/* Insights Sidebar */}
             <div>
               <InsightsPanel insights={result.insights} />
             </div>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && !result && !error && (
+          <div
+            className="bg-white rounded-xl shadow-sm border border-gray-100
+            p-16 text-center"
+          >
+            <FiTrendingUp className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-600 font-medium">No patterns loaded yet</p>
+            <p className="text-sm text-gray-400 mt-1">
+              Select filters above and click Load Patterns to begin
+            </p>
           </div>
         )}
       </div>

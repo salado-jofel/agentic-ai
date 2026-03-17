@@ -59,11 +59,6 @@ export default function Sidebar() {
           submitting reports.
         </p>
       </div>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-gray-700">
-        <p className="text-xs text-gray-500">v1.0.0 — Practice Build</p>
-      </div>
     </aside>
   );
 }

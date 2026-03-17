@@ -1,7 +1,12 @@
-
 import { createServerClient } from "@/lib/supabase-server";
-import Header from "./(components)/Header";
+import {
+  FiFileText,
+  FiClock,
+  FiCheckCircle,
+  FiAlertTriangle,
+} from "react-icons/fi";
 import ComplianceSummary from "./(components)/ComplianceSummary";
+import Header from "./(components)/Header";
 import RecentReports from "./(components)/RecentReports";
 import StatCard from "./(components)/StatCard";
 
@@ -45,28 +50,28 @@ export default async function Dashboard() {
           <StatCard
             label="Total Reports"
             value={total}
-            icon="📋"
+            icon={<FiFileText className="h-6 w-6" />}
             color="bg-blue-50 text-blue-600"
             sub="All time"
           />
           <StatCard
             label="Pending Review"
             value={pending}
-            icon="⏳"
+            icon={<FiClock className="h-6 w-6" />}
             color="bg-yellow-50 text-yellow-600"
             sub="Needs action"
           />
           <StatCard
             label="Approved"
             value={approved}
-            icon="✅"
+            icon={<FiCheckCircle className="h-6 w-6" />}
             color="bg-green-50 text-green-600"
             sub={`${total > 0 ? Math.round((approved / total) * 100) : 0}% rate`}
           />
           <StatCard
             label="Active Alerts"
             value={activeAlerts}
-            icon="⚠️"
+            icon={<FiAlertTriangle className="h-6 w-6" />}
             color="bg-red-50 text-red-600"
             sub="Unresolved"
           />

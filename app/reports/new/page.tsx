@@ -1,9 +1,18 @@
 "use client";
 
-import AlertBadge from "@/app/(components)/AlertBadge";
-import Header from "@/app/(components)/Header";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import {
+  FiCheckCircle,
+  FiXCircle,
+  FiAlertTriangle,
+  FiInfo,
+  FiSave,
+  FiLoader,
+} from "react-icons/fi";
+import Header from "@/app/(components)/Header";
+import AlertBadge from "@/app/(components)/AlertBadge";
 
 type Alert = {
   id: string;
@@ -22,7 +31,6 @@ type FormData = {
   procedure_date: string;
 };
 
-// Local rule-based compliance checks (AI call comes in Step 8)
 function runComplianceChecks(form: FormData): Alert[] {
   const alerts: Alert[] = [];
 
@@ -136,9 +144,10 @@ export default function NewReportPage() {
 
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [saved, setSaved] = useState(false);
-  const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
+  const router = useRouter();
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -159,7 +168,6 @@ export default function NewReportPage() {
 
     setSaving(true);
     try {
-      // Save report
       const res = await fetch("/api/reports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -171,7 +179,6 @@ export default function NewReportPage() {
       setSavedId(report.id);
       setSaved(true);
 
-      // Save compliance alerts if any
       if (currentAlerts.length > 0) {
         await fetch("/api/alerts", {
           method: "POST",
@@ -200,7 +207,10 @@ export default function NewReportPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Form — left 2/3 */}
           <div className="lg:col-span-2 space-y-5">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+            <div
+              className="bg-white rounded-xl shadow-sm border border-gray-100
+              p-6 space-y-5"
+            >
               <h3 className="font-semibold text-gray-800">Report Details</h3>
 
               {/* Title */}
@@ -213,7 +223,8 @@ export default function NewReportPage() {
                   value={form.title}
                   onChange={handleChange}
                   placeholder="e.g. Patient Discharge Report — Ward 3B"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5
+                    text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -228,7 +239,8 @@ export default function NewReportPage() {
                     value={form.patient_id}
                     onChange={handleChange}
                     placeholder="e.g. PT-00421"
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5
+                      text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -240,7 +252,8 @@ export default function NewReportPage() {
                     value={form.department}
                     onChange={handleChange}
                     placeholder="e.g. Cardiology"
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5
+                      text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -256,7 +269,8 @@ export default function NewReportPage() {
                     name="procedure_date"
                     value={form.procedure_date}
                     onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5
+                      text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
@@ -267,7 +281,8 @@ export default function NewReportPage() {
                     name="status"
                     value={form.status}
                     onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5
+                      text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="draft">Draft</option>
                     <option value="pending">Pending</option>
@@ -287,7 +302,8 @@ export default function NewReportPage() {
                   value={form.classification_codes}
                   onChange={handleChange}
                   placeholder="e.g. ICD-10: I21.0, CPT: 92941"
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5
+                    text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <p className="text-xs text-gray-400 mt-1">
                   Separate multiple codes with commas
@@ -305,7 +321,9 @@ export default function NewReportPage() {
                   onChange={handleChange}
                   rows={6}
                   placeholder="Enter detailed clinical observations, procedures performed, patient condition..."
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5
+                    text-sm focus:outline-none focus:ring-2 focus:ring-blue-500
+                    resize-none"
                 />
                 <p className="text-xs text-gray-400 mt-1">
                   {form.clinician_notes.length} characters
@@ -325,39 +343,30 @@ export default function NewReportPage() {
                 onClick={handleSave}
                 disabled={saving}
                 className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50
-    disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-lg
-    text-sm font-medium transition-colors flex items-center gap-2"
+                  disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-lg
+                  text-sm font-medium transition-colors flex items-center gap-2"
               >
                 {saving ? (
                   <>
-                    <svg
-                      className="animate-spin h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8z"
-                      />
-                    </svg>
+                    <FiLoader className="animate-spin h-4 w-4" />
                     Saving...
                   </>
                 ) : (
-                  "Save Report"
+                  <>
+                    <FiSave className="h-4 w-4" />
+                    Save Report
+                  </>
                 )}
               </button>
+
+              {/* Saved confirmation */}
               {saved && savedId && (
-                <span className="text-green-600 text-sm font-medium">
-                  ✅ Saved!{" "}
+                <span
+                  className="flex items-center gap-1.5 text-green-600
+                  text-sm font-medium"
+                >
+                  <FiCheckCircle className="h-4 w-4" />
+                  Saved!{" "}
                   <button
                     onClick={() => router.push("/")}
                     className="underline hover:text-green-700"
@@ -367,14 +376,11 @@ export default function NewReportPage() {
                 </span>
               )}
 
-              {saved && (
-                <span className="text-green-600 text-sm font-medium">
-                  ✅ Report saved successfully!
-                </span>
-              )}
+              {/* Critical issues blocker */}
               {highCount > 0 && !saved && (
-                <span className="text-red-500 text-sm">
-                  ❌ Fix {highCount} critical issue{highCount > 1 ? "s" : ""}{" "}
+                <span className="flex items-center gap-1.5 text-red-500 text-sm">
+                  <FiXCircle className="h-4 w-4" />
+                  Fix {highCount} critical issue{highCount > 1 ? "s" : ""}{" "}
                   before saving
                 </span>
               )}
@@ -411,8 +417,8 @@ export default function NewReportPage() {
               <div className="space-y-2">
                 {alerts.length === 0 && (
                   <div className="text-center py-6">
-                    <p className="text-2xl">✅</p>
-                    <p className="text-sm text-green-600 font-medium mt-1">
+                    <FiCheckCircle className="h-8 w-8 text-green-500 mx-auto" />
+                    <p className="text-sm text-green-600 font-medium mt-2">
                       No issues detected
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
@@ -433,9 +439,12 @@ export default function NewReportPage() {
 
             {/* Tips box */}
             <div className="bg-blue-50 rounded-xl border border-blue-100 p-4">
-              <p className="text-xs font-semibold text-blue-700 mb-2">
-                💡 Quick Tips
-              </p>
+              <div className="flex items-center gap-1.5 mb-2">
+                <FiInfo className="h-3.5 w-3.5 text-blue-700" />
+                <p className="text-xs font-semibold text-blue-700">
+                  Quick Tips
+                </p>
+              </div>
               <ul className="text-xs text-blue-600 space-y-1 list-disc list-inside">
                 <li>Use specific ICD-10 and CPT codes</li>
                 <li>Avoid contradicting status terms</li>

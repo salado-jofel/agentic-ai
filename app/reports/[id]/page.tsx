@@ -1,6 +1,16 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createServerClient } from "@/lib/supabase-server";
+
+import {
+  FiCheckCircle,
+  FiArrowLeft,
+  FiCpu,
+  FiTrendingUp,
+  FiFileText,
+  FiCircle,
+  FiClipboard,
+} from "react-icons/fi";
 import Header from "@/app/(components)/Header";
 import AlertBadge from "@/app/(components)/AlertBadge";
 
@@ -18,7 +28,6 @@ export default async function ReportDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // ✅ await params first — required in Next.js 15
   const { id } = await params;
 
   const supabase = createServerClient();
@@ -44,9 +53,10 @@ export default async function ReportDetailPage({
             <Link
               href="/"
               className="text-sm text-gray-500 hover:text-gray-700
-                flex items-center gap-1 transition-colors"
+                flex items-center gap-1.5 transition-colors"
             >
-              ← Back to Dashboard
+              <FiArrowLeft className="h-4 w-4" />
+              Back to Dashboard
             </Link>
             <span className="text-gray-300">|</span>
             <span
@@ -59,9 +69,11 @@ export default async function ReportDetailPage({
           <Link
             href="/analysis"
             className="bg-purple-600 hover:bg-purple-700 text-white
-              px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              px-4 py-2 rounded-lg text-sm font-medium transition-colors
+              flex items-center gap-2"
           >
-            🤖 Run AI Analysis
+            <FiCpu className="h-4 w-4" />
+            Run AI Analysis
           </Link>
         </div>
 
@@ -69,8 +81,8 @@ export default async function ReportDetailPage({
           {/* Main Report Info */}
           <div className="lg:col-span-2 space-y-4">
             <div
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-6
-              space-y-5"
+              className="bg-white rounded-xl shadow-sm border border-gray-100
+              p-6 space-y-5"
             >
               <h2 className="text-xl font-bold text-gray-800">
                 {report.title}
@@ -156,9 +168,10 @@ export default async function ReportDetailPage({
 
             {/* Audit Log */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="font-semibold text-gray-800 mb-4">
-                📋 Audit Trail
-              </h3>
+              <div className="flex items-center gap-2 mb-4">
+                <FiClipboard className="h-4 w-4 text-gray-500" />
+                <h3 className="font-semibold text-gray-800">Audit Trail</h3>
+              </div>
               {logs.length === 0 ? (
                 <p className="text-sm text-gray-400">No audit entries found.</p>
               ) : (
@@ -174,7 +187,10 @@ export default async function ReportDetailPage({
                         key={log.id}
                         className="flex items-start gap-3 text-sm"
                       >
-                        <span className="mt-0.5 text-blue-400">●</span>
+                        <FiCircle
+                          className="h-2.5 w-2.5 mt-1.5 text-blue-400
+                        fill-blue-400 flex-shrink-0"
+                        />
                         <div>
                           <span className="font-medium text-gray-700 capitalize">
                             {log.action.replace(/_/g, " ")}
@@ -212,7 +228,7 @@ export default async function ReportDetailPage({
 
               {alerts.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-2xl">✅</p>
+                  <FiCheckCircle className="h-10 w-10 text-green-500 mx-auto" />
                   <p className="text-sm text-green-600 font-medium mt-2">
                     No alerts found
                   </p>
@@ -255,7 +271,8 @@ export default async function ReportDetailPage({
                     bg-purple-50 hover:bg-purple-100 text-purple-700
                     px-4 py-2.5 rounded-lg transition-colors font-medium"
                 >
-                  🤖 Analyze with AI
+                  <FiCpu className="h-4 w-4" />
+                  Analyze with AI
                 </Link>
                 <Link
                   href="/patterns"
@@ -263,7 +280,8 @@ export default async function ReportDetailPage({
                     bg-blue-50 hover:bg-blue-100 text-blue-700
                     px-4 py-2.5 rounded-lg transition-colors font-medium"
                 >
-                  📈 View Patterns
+                  <FiTrendingUp className="h-4 w-4" />
+                  View Patterns
                 </Link>
                 <Link
                   href="/reports/new"
@@ -271,7 +289,8 @@ export default async function ReportDetailPage({
                     bg-gray-50 hover:bg-gray-100 text-gray-700
                     px-4 py-2.5 rounded-lg transition-colors font-medium"
                 >
-                  📝 New Report
+                  <FiFileText className="h-4 w-4" />
+                  New Report
                 </Link>
               </div>
             </div>

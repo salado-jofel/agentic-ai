@@ -1,7 +1,9 @@
+import { ReactNode } from "react";
+
 type StatCardProps = {
   label: string;
   value: string | number;
-  icon: string;
+  icon: ReactNode;
   color: string;
   sub?: string;
 };
@@ -16,7 +18,7 @@ export default function StatCard({
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-2xl">{icon}</span>
+        <span className="text-2xl text-gray-400">{icon}</span>
         <span className={`text-xs font-medium px-2 py-1 rounded-full ${color}`}>
           {sub}
         </span>
